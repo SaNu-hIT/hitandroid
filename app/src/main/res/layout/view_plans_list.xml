@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="data"
+            type="com.intellyze.recharge.database.model.DbPlans" />
+
+        <variable
+            name="callback"
+            type="com.intellyze.recharge.OnItemClickListener"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cv_listItem"
+        android:layout_margin="5dp"
+        android:elevation="2dp"
+        android:onClick="@{(v)->callback.onItemClick(v, data)}">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+        android:layout_margin="4dp"    android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@={data.planType}"
+                    android:textSize="15dp"
+                    android:layout_height="wrap_content"></TextView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center|start"
+                    android:text="@={data.description}"
+                    android:layout_height="wrap_content"></TextView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center|start"
+                    android:text="@={data.talktime}"
+                    android:layout_height="wrap_content"></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center|start"
+                    android:text="@={data.validity}"
+                    android:layout_height="wrap_content"></TextView>
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_gravity="center|end"
+            android:text="@={data.price}"
+            android:textSize="19dp"
+            android:layout_margin="10dp"
+            android:gravity="center"   android:padding="4dp"
+            android:textColor="@color/white"
+            android:background="@drawable/rect_background"
+            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"></TextView>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="fragment"
+            type="com.intellyze.recharge.ui.fragment.HomeFragment" />
+
+        <variable
+            name="wallet"
+            type="com.intellyze.recharge.cloud.response.wallet.Wallet" />
+
+        <variable
+            name="viewModel"
+            type="com.intellyze.recharge.view.model.HomeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/mainBg">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:cardCornerRadius="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/logo"
+                        android:visibility="gone" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!--                        <TextView-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            style="@style/text_input_secondary"         android:layout_height="wrap_content"-->
+                        <!--                            android:textSize="25dp"-->
+                        <!--                            android:text="@={wallet.walletBalance}"-->
+                        <!--                            android:layout_gravity="center"-->
+                        <!--                            android:gravity="center"-->
+                        <!--                            android:textStyle="bold" />-->
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+            <!-- TODO: Update blank fragment layout -->
+            <TextView
+                style="@style/text_input_secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
+                android:text="Recharges And Pay Bills"
+                android:textColor="@color/black" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                app:cardCornerRadius="2dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+<!--                    <Button-->
+<!--                        android:id="@+id/mobile"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="80dp"-->
+<!--                        android:layout_margin="4dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@color/colorPrimary"-->
+<!--                        android:drawableTop="@drawable/ic_mobile"-->
+<!--                        android:onClick="@{(v)->fragment.onItemClick(v)}"-->
+<!--                        android:text="MOBILE"-->
+
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="10dp" />-->
+                    <LinearLayout
+                        android:id="@+id/mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:onClick="@{(v)->fragment.onItemClick(v)}"     android:descendantFocusability="blocksDescendants"
+                        android:gravity="center"
+                        android:orientation="vertical" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/app_name"
+                            android:src="@drawable/ic_mobile" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MOBILE"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/dth"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:onClick="@{(v)->fragment.onItemClick(v)}"    android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:descendantFocusability="blocksDescendants"
+                        android:gravity="center"
+                        android:orientation="vertical" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/app_name"
+                            android:src="@drawable/ic_dth" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DTH"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+
+<!--                    <Button-->
+<!--                        android:id="@+id/dth"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="80dp"-->
+<!--                        android:layout_margin="4dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@color/colorPrimary"-->
+<!--                        android:drawableTop="@drawable/ic_dth"-->
+<!--                        android:onClick="@{(v)->fragment.onItemClick(v)}"-->
+<!--                        android:text="DTH"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="10dp" />-->
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/text_input_secondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="wallet"
+                            android:textSize="15dp"
+                            android:textStyle="bold"
+
+
+                            />
+
+                        <TextView
+                            style="@style/text_input_secondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@={wallet.walletBalance}"
+                            android:textSize="22dp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                style="@style/text_input_secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="Recent Transactions"
+                android:textColor="@color/black" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp" />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>
+
+

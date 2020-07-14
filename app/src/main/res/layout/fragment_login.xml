@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+
+        <variable
+            name="data"
+            type="com.intellyze.recharge.model.LoginData" />
+
+        <variable
+            name="fragment"
+            type="com.intellyze.recharge.ui.fragment.LoginFragment" />
+
+        <variable
+            name="errorModel"
+            type="com.intellyze.recharge.model.LoginErrors" />
+
+        <variable
+            name="viewModel"
+            type="com.intellyze.recharge.view.model.LogInViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/topBg">
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/logohit"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            app:helperText="@{errorModel.errorUserName}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_logo">
+
+            <EditText
+                style="@style/text_input_primary"
+                android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+                android:enabled="@{errorModel.uiUpdate ? false : true}"
+                android:hint="@string/hint_phone"
+                android:inputType="phone"
+                android:imeOptions="actionNext"
+                android:text="@={data.username}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:helperText="@{errorModel.errorPassword}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_userName">
+            <EditText
+                style="@style/text_input_primary"
+                android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+                android:enabled="@{errorModel.uiUpdate ? false : true}"
+                android:hint="@string/hint_password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:text="@={data.password}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_forgotPassword"
+            style="@style/text_label_link"
+            android:layout_marginTop="10dp"
+            android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+            android:enabled="@{errorModel.uiUpdate ? false : true}"
+            android:padding="16dp"
+            android:visibility="invisible"
+            android:text="@string/forgotPassword"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_password" />
+
+        <Button
+            style="@style/button_primary"
+            android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+            android:enabled="@{errorModel.uiUpdate ? false : true}"
+            android:onClick="@{() -> viewModel.doLogin(data, errorModel)}"
+            android:text="@{errorModel.uiUpdate ? @string/sigining : @string/siginin}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_forgotPassword"
+
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</layout>

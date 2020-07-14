@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_navigation"
+    app:startDestination="@id/splashFragment">
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.intellyze.recharge.ui.fragment.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_to_loginFragment"
+            app:destination="@id/loginFragment" />
+
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.intellyze.recharge.ui.fragment.LoginFragment"
+        tools:layout="@layout/fragment_login"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.intellyze.recharge.ui.fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_mobileFragment"
+            app:destination="@id/mobileFragment" />
+        <action
+            android:id="@+id/logout_to_loginFragment"
+            app:destination="@id/loginFragment" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/mobileFragment"
+        android:name="com.intellyze.recharge.ui.fragment.MobileFragment"
+        android:label="fragment_mobile"
+        tools:layout="@layout/fragment_mobile" >
+
+        <action
+            android:id="@+id/action_mobileFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dthFragment"
+        android:name="com.intellyze.recharge.ui.fragment.DthFragment"
+        android:label="fragment_dth"
+        tools:layout="@layout/fragment_dth" />
+    <fragment
+        android:id="@+id/gasFragment"
+        android:name="com.intellyze.recharge.ui.fragment.GasFragment"
+        android:label="fragment_gas"
+        tools:layout="@layout/fragment_gas" />
+    <fragment
+        android:id="@+id/electricityFragment"
+        android:name="com.intellyze.recharge.ui.fragment.ElectricityFragment"
+        android:label="fragment_electricity"
+        tools:layout="@layout/fragment_electricity" />
+
+
+</navigation>

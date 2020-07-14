@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="data"
+            type="com.intellyze.recharge.model.MobileRechargeData" />
+
+        <variable
+            name="fragment"
+            type="com.intellyze.recharge.ui.fragment.MobileFragment" />
+
+        <variable
+            name="errorModel"
+            type="com.intellyze.recharge.model.RechargeErrors" />
+
+        <variable
+            name="viewModel"
+            type="com.intellyze.recharge.view.model.RechargeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/topBg">
+
+
+        <TextView
+            android:id="@+id/moble_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="MOBILE RECHARGE"
+            android:textSize="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/til_mobileNumber"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_mobileNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:helperText="@{errorModel.errorNumber}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/moble_text">
+
+            <EditText
+                android:id="@+id/text_phone"
+                style="@style/text_input_primary"
+                android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+                android:enabled="@{errorModel.uiUpdate ? false : true}"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:text="@={data.recipientPhone}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <LinearLayout
+            android:id="@+id/til_operator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:visibility="@{ data.operatorId == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_mobileNumber">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tils_operator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                app:helperText="@{errorModel.errrorOperator}">
+
+                <EditText
+                    style="@style/text_input_primary"
+                    android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+                    android:enabled="@{errorModel.uiUpdate ? false : true}"
+                    android:hint="Operator"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:text="@={data.operatorName}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/operator_image"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:onClick="@{() -> fragment.selectOperator()}"
+                app:image_url="@{data.logoUrl}"
+                android:src="@drawable/ic_launcher_background" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/tils_amount"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_operator">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".2"
+            app:helperText="@{errorModel.errorAmount}"
+       >
+
+            <EditText
+                style="@style/text_input_primary"
+                android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+                android:enabled="@{errorModel.uiUpdate ? false : true}"
+                android:hint="Amoint"
+                android:imeOptions="actionDone"
+                android:textSize="20dp"
+                android:inputType="number"
+                android:text="@={data.amount}" />
+
+
+
+
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+                android:enabled="@{errorModel.uiUpdate ? false : true}"
+                android:id="@+id/browse_plans"
+                android:onClick="@{() -> fragment.browsePlans(data, errorModel)}"
+                android:scaleType="centerCrop"
+                android:textSize="10dp"
+                android:textColor="@color/white"
+                android:layout_weight=".4"
+                android:background="@color/colorPrimary"
+                android:text="BROWSE PLANS"
+             />
+        </LinearLayout>
+
+        <Button
+            style="@style/button_primary"
+            android:layout_marginTop="25dp"
+            android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+            android:enabled="@{errorModel.uiUpdate ? false : true}"
+            android:onClick="@{() -> viewModel.doRecharge(data, errorModel)}"
+            android:text="Recharge Now"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tils_amount" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

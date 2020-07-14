@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="data"
+            type="com.intellyze.recharge.cloud.response.transaction.Transaction" />
+
+        <variable
+            name="callback"
+            type="com.intellyze.recharge.OnItemClickListener"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:id="@+id/cv_listItem"
+        android:onClick="@{(v)->callback.onItemClick(v, data)}">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:orientation="horizontal"
+          android:layout_height="wrap_content">
+
+          <androidx.cardview.widget.CardView
+              android:layout_width="wrap_content"
+              app:cardCornerRadius="128dp"
+              android:layout_margin="10dp"
+              android:layout_height="wrap_content">
+              <ImageView
+                  android:id="@+id/iv_groupIcon"
+                  android:layout_width="50dp"
+                  android:layout_height="50dp"
+                  android:layout_alignParentLeft="true"
+                  android:layout_centerHorizontal="true"
+                  android:adjustViewBounds="true"
+                  android:scaleType="centerCrop"
+                  app:image_url="@{data.logoUrl}"
+                  android:src="@drawable/logo" />
+
+          </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_height="wrap_content">
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_gravity="center"
+              android:text="@={data.recipientPhone}"
+              android:textSize="15dp"
+                android:layout_height="wrap_content"></TextView>
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_gravity="center|start"
+                android:text="@={data.operatorName}"
+              android:layout_height="wrap_content"></TextView>
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_gravity="center|start"
+                android:text="@={data.date}"
+              android:layout_height="wrap_content"></TextView>
+        </LinearLayout>
+
+
+
+
+      </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center|end"
+            android:text="@={data.amount}"
+            android:textSize="19dp"
+            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"></TextView>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>
