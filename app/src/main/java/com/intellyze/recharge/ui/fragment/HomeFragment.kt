@@ -1,8 +1,12 @@
 package com.intellyze.recharge.ui.fragment
 
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,6 +20,7 @@ import com.intellyze.recharge.R
 import com.intellyze.recharge.cloud.response.transaction.Data
 import com.intellyze.recharge.databinding.FragmentHomeBinding
 import com.intellyze.recharge.ui.adapter.TransactionListAdapter
+import com.intellyze.recharge.utls.Utility
 import com.intellyze.recharge.view.model.HomeViewModel
 import com.intellyze.recharge.view.model.LogInViewModel
 
@@ -38,7 +43,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
                         )
                         return
                     } else {
-                        showBalanceError("Wallet", "Please add wallet amount")
+                        showAlert("Wallet", "Please add wallet amount")
                     }
                 }
                 R.id.dth -> {
@@ -49,16 +54,35 @@ class HomeFragment : Fragment(), OnItemClickListener {
                             bundle
                         )
                     } else {
-                        showBalanceError("Wallet", "Please add wallet amount")
+                        showAlert("Wallet", "Please add wallet amount")
                     }
                 }
             }
         }else{
-            showBalanceError("Wallet", "Please add wallet amount")
+            showAlert("Wallet", "Please add wallet amount")
         }
 
     }
-
+    fun startProgress(
+        message: String?
+    ) {
+        if (mProgressDialog==null) {
+            mProgressDialog = ProgressDialog(
+                activity,
+                ProgressDialog.STYLE_SPINNER
+            )
+            mProgressDialog!!.isIndeterminate = false
+            mProgressDialog!!.setMessage("Loading...")
+            mProgressDialog!!.setCancelable(false)
+        }
+        activity?.runOnUiThread { mProgressDialog!!.show() }
+        Log.e("BASE ACT", "ShowLoading: ")
+    }
+    fun stopProgress() {
+        activity?.runOnUiThread { mProgressDialog!!.dismiss() }
+        Log.e("BASE ACT", "cancelLoading: ")
+    }
+    protected var mProgressDialog: ProgressDialog? = null
     var binding: FragmentHomeBinding? = null
     var homeViewModel: HomeViewModel? = null
     override fun onCreateView(
@@ -72,7 +96,6 @@ class HomeFragment : Fragment(), OnItemClickListener {
             false
         ) as FragmentHomeBinding
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
         binding?.fragment = this
         binding?.viewModel = homeViewModel
         return binding?.root
@@ -83,10 +106,8 @@ class HomeFragment : Fragment(), OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         activity?.title = "Hit-Recharge"
-
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
-
-
     var adapter: TransactionListAdapter? = null
     private fun initView(view: View) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
@@ -110,45 +131,40 @@ class HomeFragment : Fragment(), OnItemClickListener {
 // as you specify a parent activity in AndroidManifest.xml.
         val id: Int = item.getItemId()
         if (id == R.id.action_favorite) {
-            showAlertDialog("Waring!", "Do you want you logout? ")
+            showAlertDialog("Waring ! ", "Do you realy want you logout ? ")
             return true
-        }
+        }else
         if (id == R.id.refresh) {
           observeData()
+            return true
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun showAlertDialog(title: String, message: String) {
-        val mBuilder =
-            AlertDialog.Builder(context)
-        mBuilder.setTitle(title).setMessage(message)
-        mBuilder.setPositiveButton(
-            android.R.string.ok
-        ) { dialogInterface, i ->
-
+        val builder =
+            AlertDialog.Builder(activity)
+        val customLayout: View = layoutInflater.inflate(R.layout.show_confirm_alert, null)
+        builder.setView(customLayout)
+        val heading_text = customLayout.findViewById<TextView>(R.id.heading_text)
+        val message_text = customLayout.findViewById<TextView>(R.id.message_text)
+        val ok_action = customLayout.findViewById<TextView>(R.id.ok_action)
+        heading_text.text = title
+        message_text.text = message
+        val dialog = builder.create()
+        dialog.show()
+        ok_action.setOnClickListener { view: View? ->
             homeViewModel?.logOut()
-            dialogInterface.dismiss()
+            dialog.dismiss()
             findNavController().navigate(R.id.logout_to_loginFragment)
 
 
+
         }
-        mBuilder.create()
-        mBuilder.show()
+
     }
 
-    private fun showBalanceError(title: String, message: String) {
-        val mBuilder =
-            AlertDialog.Builder(context)
-        mBuilder.setTitle(title).setMessage(message)
-        mBuilder.setPositiveButton(
-            android.R.string.ok
-        ) { dialogInterface, i ->
-            dialogInterface.dismiss()
-        }
-        mBuilder.create()
-        mBuilder.show()
-    }
+
 
     override fun onItemClick(v: View, obj: Any) {
     }
@@ -157,27 +173,61 @@ class HomeFragment : Fragment(), OnItemClickListener {
     var operatorId: String = ""
     var logoUrls: List<String>? = null
     fun observeData() {
-        homeViewModel?.getTransactions()
-        homeViewModel?.getWalletAmount()
-        homeViewModel?.getTransactionLiveData()
-            ?.observe(viewLifecycleOwner, Observer<Data> { t: Data? ->
-                adapter?.setGroups(t?.transactions)
 
-            })
+        if(Utility.isNetworkAvailable(context))
+        {
+            startProgress("Loading..")
+            homeViewModel?.getTransactions()
 
+            homeViewModel?.getTransactionLiveData()
+                ?.observe(viewLifecycleOwner, Observer<Data> { t: Data? ->
+                    adapter?.setGroups(t?.transactions)
 
-        homeViewModel?.getWalletLiveData()
-            ?.observe(
-                viewLifecycleOwner,
-                Observer<com.intellyze.recharge.cloud.response.wallet.Data> { t: com.intellyze.recharge.cloud.response.wallet.Data? ->
-                    if (null != t?.trans) {
-                        if (t.trans?.size!! > 0) {
-                            binding?.wallet = t.trans?.get(0)
-                        }
-                    }
+                    homeViewModel?.getWalletAmount()
+
 
                 })
+            homeViewModel?.getWalletLiveData()
+                ?.observe(
+                    viewLifecycleOwner,
+                    Observer<com.intellyze.recharge.cloud.response.wallet.Data> { t: com.intellyze.recharge.cloud.response.wallet.Data? ->
+                        if (null != t?.trans) {
+                            if (t.trans?.size!! > 0) {
+                                binding?.wallet = t.trans?.get(0)
+                            }
+                        }
+                        stopProgress()
+
+                    })
+        }else{
+            showAlert("No internet","Internet not available")
+        }
+
+
+
     }
+    private fun showAlert(
+        tittle: String,
+        message: String
+    ) {
+        val builder =
+            AlertDialog.Builder(activity)
+        val customLayout: View = layoutInflater.inflate(R.layout.show_confirm_alert, null)
+        builder.setView(customLayout)
+        val heading_text = customLayout.findViewById<TextView>(R.id.heading_text)
+        val message_text = customLayout.findViewById<TextView>(R.id.message_text)
+        val ok_action = customLayout.findViewById<TextView>(R.id.ok_action)
+        heading_text.text = tittle
+        message_text.text = message
+        val dialog = builder.create()
+        dialog.show()
+        ok_action.setOnClickListener { view: View? ->
+            dialog.dismiss()
+        }
+    }
+    override fun onResume() {
+        super.onResume()
 
 
+    }
 }

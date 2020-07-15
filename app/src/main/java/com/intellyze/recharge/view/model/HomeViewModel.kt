@@ -65,6 +65,7 @@ class HomeViewModel(context: Application) : AndroidViewModel(context) {
                     userLiveData?.mData = result.data!!
                     userLiveData?.postTransaction()
                 } else {
+                    userLiveData?.postTransaction()
                 }
             },
                 { error ->
@@ -92,6 +93,7 @@ class HomeViewModel(context: Application) : AndroidViewModel(context) {
                     walletLiveData?.mData = result.data!!
                     walletLiveData?.postTransaction()
                 } else {
+                    walletLiveData?.postTransaction()
                 }
             },
                 { error ->

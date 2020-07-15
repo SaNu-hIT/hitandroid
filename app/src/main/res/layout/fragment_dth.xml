@@ -109,7 +109,7 @@
                 style="@style/text_input_primary"
                 android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
                 android:enabled="@{errorModel.uiUpdate ? false : true}"
-                android:hint="Amoint"
+                android:hint="Amount"
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:text="@={data.amount}" />

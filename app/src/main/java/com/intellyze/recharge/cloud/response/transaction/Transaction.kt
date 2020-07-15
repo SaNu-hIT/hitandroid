@@ -27,13 +27,10 @@ class Transaction {
     var senderNumber: String? = null
     @SerializedName("senderPhone")
     var senderPhone: String? = null
-
     @SerializedName("shopId")
     var shopId: String? = null
-
        @SerializedName("logoUrl")
     var logoUrl: String? = null
-
     @SerializedName("__v")
     private var m_V: Long? = null
     @SerializedName("_id")

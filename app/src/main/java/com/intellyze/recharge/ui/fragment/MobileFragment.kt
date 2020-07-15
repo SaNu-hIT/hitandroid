@@ -1,9 +1,13 @@
 package com.intellyze.recharge.ui.fragment
 
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
@@ -13,19 +17,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.intellyze.OnItemSelctedListener
-import com.intellyze.recharge.OnItemClickListener
 import com.intellyze.recharge.R
 import com.intellyze.recharge.cloud.response.operators.OperatorResponce
-
-import com.intellyze.recharge.cloud.response.plans.PlansResponse
 import com.intellyze.recharge.database.model.DbOperator
 import com.intellyze.recharge.database.model.DbPlans
 import com.intellyze.recharge.databinding.FragmentMobileBinding
 import com.intellyze.recharge.livedata.UserData
 import com.intellyze.recharge.model.MobileRechargeData
 import com.intellyze.recharge.model.RechargeErrors
+import com.intellyze.recharge.utls.Utility
 import com.intellyze.recharge.view.model.RechargeViewModel
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_mobile.*
 
 
@@ -89,9 +90,58 @@ fun selectOperator()
     }
 
 
+    fun startProgress(
+        message: String?
+    ) { //        this.context = context;
+        mProgressDialog = ProgressDialog(
+            activity,
+            ProgressDialog.STYLE_SPINNER
+        )
+        mProgressDialog!!.isIndeterminate = false
+        mProgressDialog!!.setMessage("Loading...")
+        mProgressDialog!!.setCancelable(false)
+        activity?.runOnUiThread { mProgressDialog!!.show() }
+        Log.e("BASE ACT", "ShowLoading: ")
+    }
+    fun stopProgress() {
+        activity?.runOnUiThread { mProgressDialog!!.dismiss() }
+        Log.e("BASE ACT", "cancelLoading: ")
+    }
+    protected var mProgressDialog: ProgressDialog? = null
+
+    private fun showAlert(
+        tittle: String,
+        message: String
+    ) {
+        val builder =
+            AlertDialog.Builder(activity)
+        val customLayout: View = layoutInflater.inflate(R.layout.show_confirm_alert, null)
+        builder.setView(customLayout)
+        val heading_text = customLayout.findViewById<TextView>(R.id.heading_text)
+        val message_text = customLayout.findViewById<TextView>(R.id.message_text)
+        val ok_action = customLayout.findViewById<TextView>(R.id.ok_action)
+        heading_text.text = tittle
+        message_text.text = message
+        val dialog = builder.create()
+        dialog.show()
+        ok_action.setOnClickListener { view: View? ->
+            dialog.dismiss()
+        }
+    }
+
+    fun doRecharge(data: MobileRechargeData, errorModel: RechargeErrors) {
+        if(Utility.isNetworkAvailable(context))
+        {
+            startProgress("Recharge processing Please wait")
+            viewModel?.doRecharge(data,errorModel)
+        }else{
+            showAlert("No internet","Internet not available")
+        }
+
+    }
 
 
-    fun observeData() {
+        fun observeData() {
 
         viewModel?.dbPlans?.observe(viewLifecycleOwner, Observer<List<DbPlans>>() { plans ->
             val dialogFragment = PlansDialogFragment(this)
@@ -106,18 +156,46 @@ fun selectOperator()
                 when (t?.getStatus()) {
                     UserData.UserStatus.ERROR -> {
                         showMsg(t.getError()?.getErrorMessage())
+                        stopProgress()
                     }
                     UserData.UserStatus.RECHARGE_SUCCESS -> {
-                        Toast.makeText(activity, "Recharge Success", Toast.LENGTH_LONG).show()
-                        findNavController().navigate(R.id.action_mobileFragment_to_homeFragment)
+                        stopProgress()
+//                        Toast.makeText(activity, "Recharge Success", Toast.LENGTH_LONG).show()
+
+
+                        showCustomAlertForSaveSummary("Success","Recharge Success")
+//                        findNavController().navigate(R.id.action_mobileFragment_to_homeFragment)
+
                     }
                     UserData.UserStatus.RECHARGE_FAIL -> {
                         Toast.makeText(activity, t.getMessage(), Toast.LENGTH_LONG).show()
+                        stopProgress()
                     }
                 }
             })
     }
 
+
+    private fun showCustomAlertForSaveSummary(
+        tittle: String,
+        message: String
+    ) {
+        val builder =
+            AlertDialog.Builder(activity)
+        val customLayout: View = layoutInflater.inflate(R.layout.show_confirm_alert, null)
+        builder.setView(customLayout)
+        val heading_text = customLayout.findViewById<TextView>(R.id.heading_text)
+        val message_text = customLayout.findViewById<TextView>(R.id.message_text)
+        val ok_action = customLayout.findViewById<TextView>(R.id.ok_action)
+        heading_text.text = tittle
+        message_text.text = message
+        val dialog = builder.create()
+        dialog.show()
+        ok_action.setOnClickListener { view: View? ->
+                                    findNavController().navigate(R.id.action_mobileFragment_to_homeFragment)
+            dialog.dismiss()
+        }
+    }
 
 
     fun showMsg(msg: String?) {
@@ -162,6 +240,9 @@ fun selectOperator()
         }
         text_phone.setOnFocusChangeListener { view, b ->
             if (!b) {
+                if(Utility.isNetworkAvailable(context))
+                {
+
                 errorModel?.uiUpdate = true
 //                Toast.makeText(activity, "Get operator", Toast.LENGTH_LONG).show()
                 viewModel?.getOperators(text_phone.text.toString())
@@ -169,8 +250,7 @@ fun selectOperator()
                     ?.observe(
                         viewLifecycleOwner,
                         Observer<OperatorResponce> { t: OperatorResponce? ->
-                            if(t?.getStatus() == 0)
-                            {
+                            if (t?.getStatus() == 0) {
 //                                Toast.makeText(activity, "operator" + t?.name, Toast.LENGTH_LONG).show()
                                 data?.operatorId = t?.operatorId.toString()
                                 data?.operatorName = t?.name
@@ -179,14 +259,16 @@ fun selectOperator()
                                 }
                                 binding?.data = data
                                 errorModel?.uiUpdate = false
-                            }else if (t?.getStatus() == 10){
+                            } else if (t?.getStatus() == 10) {
 //                                Toast.makeText(activity, "operator failed" + t?.name, Toast.LENGTH_LONG).show()
                                 errorModel?.uiUpdate = false
 //                                viewModel?.getOperators(text_phone.text.toString())
                             }
 
                         })
-
+            }else{
+                    showAlert("No internet","Internet not available")
+                }
             }
         }
 

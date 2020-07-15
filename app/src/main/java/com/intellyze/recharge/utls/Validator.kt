@@ -177,13 +177,19 @@ class Validator(context: Context?) {
 
 
     fun isValidPhone(phone : String?): String?{
+//        var errorMSg: String? = null;
+//        if (isNullOrEmpty(phone)) {
+//            errorMSg = mContext?.getString(R.string.invalid_phone)
+//            return errorMSg;
+//        }
+//
+//        if(!isValidLength(phone, 10, 10)){
+//            errorMSg = mContext?.getString(R.string.invalid_phone)
+//            return errorMSg;
+//        }
+
         var errorMSg: String? = null;
         if (isNullOrEmpty(phone)) {
-            errorMSg = mContext?.getString(R.string.invalid_phone)
-            return errorMSg;
-        }
-
-        if(!isValidLength(phone, 10, 10)){
             errorMSg = mContext?.getString(R.string.invalid_phone)
             return errorMSg;
         }

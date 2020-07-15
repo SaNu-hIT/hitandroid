@@ -76,7 +76,8 @@ interface WebService {
 
     companion object Factory {
         fun create(): WebService? {
-            var url = "https://rechargemylife.herokuapp.com/"
+//            var url = "https://rechargemylife.herokuapp.com/"
+            var url = "https://hitrecharge.herokuapp.com/"
             val connector = Cloud.mCloudConnector
             if(null != connector && !TextUtils.isEmpty(connector.getBaseUrl())){
                 url = connector.getBaseUrl()

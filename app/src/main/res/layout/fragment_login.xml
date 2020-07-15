@@ -20,19 +20,16 @@
             name="viewModel"
             type="com.intellyze.recharge.view.model.LogInViewModel" />
     </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/topBg">
-
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/centerBg">
         <ImageView
             android:id="@+id/iv_logo"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="140dp"
             android:layout_marginTop="20dp"
-            android:src="@drawable/logohit"
+            android:src="@drawable/iconnew"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_userName"
             android:layout_width="match_parent"
@@ -42,12 +39,13 @@
             app:helperText="@{errorModel.errorUserName}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_logo">
-
             <EditText
                 style="@style/text_input_primary"
                 android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
                 android:enabled="@{errorModel.uiUpdate ? false : true}"
                 android:hint="@string/hint_phone"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensans_font"
                 android:inputType="phone"
                 android:imeOptions="actionNext"
                 android:text="@={data.username}" />
@@ -65,7 +63,7 @@
                 style="@style/text_input_primary"
                 android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
                 android:enabled="@{errorModel.uiUpdate ? false : true}"
-                android:hint="@string/hint_password"
+                android:textSize="14dp"        android:fontFamily="@font/opensans_font"         android:hint="@string/hint_password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:text="@={data.password}" />
@@ -77,7 +75,7 @@
             android:layout_marginTop="10dp"
             android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
             android:enabled="@{errorModel.uiUpdate ? false : true}"
-            android:padding="16dp"
+            android:fontFamily="@font/opensans_font"       android:padding="16dp"
             android:visibility="invisible"
             android:text="@string/forgotPassword"
             app:layout_constraintRight_toRightOf="parent"
@@ -87,13 +85,31 @@
             style="@style/button_primary"
             android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
             android:enabled="@{errorModel.uiUpdate ? false : true}"
-            android:onClick="@{() -> viewModel.doLogin(data, errorModel)}"
+            android:onClick="@{() -> fragment.doLogin(data, errorModel)}"
             android:text="@{errorModel.uiUpdate ? @string/sigining : @string/siginin}"
+            android:fontFamily="@font/opensans_font"
             app:layout_constraintLeft_toLeftOf="parent"
+            android:id="@+id/button_done"
+            android:textSize="14dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_forgotPassword"
 
             />
+
+
+        <TextView
+            android:id="@+id/testApp"
+            style="@style/text_label"
+            android:layout_marginTop="10dp"
+            android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
+            android:enabled="@{errorModel.uiUpdate ? false : true}"
+            android:padding="16dp"
+            android:fontFamily="@font/opensans_font"         android:visibility="visible"
+            android:text="Powererd By Leeways"
+            app:layout_constraintTop_toBottomOf="@+id/button_done"
+            app:layout_constraintRight_toRightOf="parent"
+      />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

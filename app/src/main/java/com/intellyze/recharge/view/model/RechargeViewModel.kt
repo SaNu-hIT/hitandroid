@@ -77,6 +77,8 @@ class RechargeViewModel(context: Application) : AndroidViewModel(context) {
 
         return dbPlans
     }
+
+
     fun doRecharge(data: MobileRechargeData, errorModel: RechargeErrors) {
 
         data.customIdentifier = ""
@@ -97,6 +99,11 @@ class RechargeViewModel(context: Application) : AndroidViewModel(context) {
         ) {
             errorModel.uiUpdate = true
             rechargeData?.let { callRecharge(it, errorModel) };
+        }else{
+            errorModel.uiUpdate = false
+             userLiveData?.postRechargeFailed("Please check the mobile number and amount.")
+
+
         }
     }
 
@@ -132,7 +139,6 @@ class RechargeViewModel(context: Application) : AndroidViewModel(context) {
                     error.message
                 });
     }
-
     @SuppressLint("CheckResult")
     fun callRecharge(data: MobileRechargeData, errorModel: RechargeErrors) {
         services = WebService.create()
