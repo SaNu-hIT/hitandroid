@@ -75,7 +75,9 @@ class HomeViewModel(context: Application) : AndroidViewModel(context) {
     }
     fun getTransactionLiveData(): TransactionLiveData? {
         return userLiveData
-    }    fun getWalletLiveData(): WalletLiveData? {
+    }
+
+    fun getWalletLiveData(): WalletLiveData? {
         return walletLiveData
     }
     fun getWalletAmount() {

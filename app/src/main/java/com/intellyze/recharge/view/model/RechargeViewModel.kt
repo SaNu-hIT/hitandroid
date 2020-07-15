@@ -8,11 +8,12 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.intellyze.recharge.cloud.request.recharge.MobileNumberRequest
 import com.intellyze.recharge.cloud.request.recharge.OperatorNameRequest
+import com.intellyze.recharge.cloud.request.recharge.ShopIdRequest
 import com.intellyze.recharge.cloud.request.user.WebService
-import com.intellyze.recharge.cloud.response.alloperator.Operator
 
 import com.intellyze.recharge.cloud.response.operators.OperatorResponce
 import com.intellyze.recharge.cloud.response.plans.PlansResponse
+import com.intellyze.recharge.cloud.response.wallet.Wallet
 import com.intellyze.recharge.database.model.DbOperator
 import com.intellyze.recharge.database.model.DbPlans
 import com.intellyze.recharge.database.room.repo.OperatorRepository
@@ -34,6 +35,7 @@ class RechargeViewModel(context: Application) : AndroidViewModel(context) {
     internal var userLiveData: UserLiveData? = null
     internal var operatorData: OperatorLiveData? = null
     internal var plansLiveData: PlansLiveData? = null
+    internal var walletLiveData: WalletLiveData? = null
 
 
     var operatorRepository: OperatorRepository? = null
@@ -49,6 +51,7 @@ class RechargeViewModel(context: Application) : AndroidViewModel(context) {
         operatorRepository = OperatorRepository(context)
         plansRepository = PlansRepository(context)
         mPref = AppSharedPreferance(context)
+        walletLiveData = WalletLiveData()
     }
 
 
@@ -79,7 +82,11 @@ class RechargeViewModel(context: Application) : AndroidViewModel(context) {
     }
 
 
-    fun doRecharge(data: MobileRechargeData, errorModel: RechargeErrors) {
+    fun doRecharge(
+        data: MobileRechargeData,
+        errorModel: RechargeErrors,
+        wallet: Wallet
+    ) {
 
         data.customIdentifier = ""
         data.discount = "0.0"
@@ -208,6 +215,33 @@ var dbOperators :LiveData<PagedList<DbOperator>>? = null
     fun getOperatorById(type:String): LiveData<PagedList<DbOperator>>? {
         dbOperators = operatorRepository?.getOperatorById(type)
         return dbOperators
+
+    }
+    fun getWalletLiveData(): WalletLiveData? {
+        return walletLiveData
+    }
+    fun getWalletAmount() {
+        var shopId = mPref?.getStringPrefValue(AppSharedPreferance.Constants.SHOP_ID)
+        services = WebService.create()
+        var shopIdRequest = ShopIdRequest()
+        shopIdRequest.shopId=shopId
+        services?.getWallet(shopIdRequest)
+            ?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())
+            ?.subscribe({ result ->
+                if (result.status.equals(
+                        "1000"
+                    )
+                ) {
+                    walletLiveData?.mData = result.data!!
+                    walletLiveData?.postTransaction()
+                } else {
+                    walletLiveData?.postTransaction()
+                }
+            },
+                { error ->
+                    error.printStackTrace()
+                    error.message
+                });
 
     }
 }

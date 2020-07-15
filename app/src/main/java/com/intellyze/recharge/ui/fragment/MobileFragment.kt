@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.intellyze.OnItemSelctedListener
 import com.intellyze.recharge.R
 import com.intellyze.recharge.cloud.response.operators.OperatorResponce
+import com.intellyze.recharge.cloud.response.wallet.Wallet
 import com.intellyze.recharge.database.model.DbOperator
 import com.intellyze.recharge.database.model.DbPlans
 import com.intellyze.recharge.databinding.FragmentMobileBinding
@@ -129,14 +130,55 @@ fun selectOperator()
         }
     }
 
-    fun doRecharge(data: MobileRechargeData, errorModel: RechargeErrors) {
+    fun doRecharge(data: MobileRechargeData, errorModel: RechargeErrors,wallet: Wallet) {
         if(Utility.isNetworkAvailable(context))
         {
-            startProgress("Recharge processing Please wait")
-            viewModel?.doRecharge(data,errorModel)
+            if(null!=data.amount && null!= wallet.walletBalance)
+            {
+                if(data.amount?.toDouble()!! < wallet.walletBalance?.toDouble()!!)
+                {
+                    startProgress("Recharge processing Please wait")
+                    viewModel?.doRecharge(data,errorModel,wallet)
+                }else{
+                    showAlert("Wallet","Please recharge your wallet")
+                }
+            }else{
+                showAlert("Error","Please re-login your application")
+            }
+
         }else{
             showAlert("No internet","Internet not available")
         }
+
+    }
+
+
+    fun observeWallet() {
+
+        if(Utility.isNetworkAvailable(context))
+        {
+            startProgress("Loading..")
+
+
+
+            viewModel?.getWalletAmount()
+            viewModel?.getWalletLiveData()
+                ?.observe(
+                    viewLifecycleOwner,
+                    Observer<com.intellyze.recharge.cloud.response.wallet.Data> { t: com.intellyze.recharge.cloud.response.wallet.Data? ->
+                        if (null != t?.trans) {
+                            if (t.trans?.size!! > 0) {
+                                binding?.wallet = t.trans?.get(0)
+                            }
+                        }
+                        stopProgress()
+
+                    })
+        }else{
+            showAlert("No internet","Internet not available")
+        }
+
+
 
     }
 
@@ -208,7 +250,6 @@ fun selectOperator()
     var call: OnBackPressedCallback? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         var rechargeType = arguments?.getInt("RECHARGE_TYPE")!!
         data?.operatorType = rechargeType.toString()
         binding?.data = data
@@ -228,6 +269,7 @@ fun selectOperator()
         }
         activity?.title = "Hit-$type Recharge"
         observeData()
+        observeWallet()
         call = requireActivity().onBackPressedDispatcher.addCallback(this) {
             if (null != call) {
                 if (call?.isEnabled!!) {
@@ -293,5 +335,8 @@ fun selectOperator()
         }
 
     }
+
+
+
 
 }

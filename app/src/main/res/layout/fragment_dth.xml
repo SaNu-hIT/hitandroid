@@ -121,7 +121,6 @@
             android:layout_marginTop="25dp"
             android:alpha="@{errorModel.uiUpdate ? 0.3f : 1.0f}"
             android:enabled="@{errorModel.uiUpdate ? false : true}"
-            android:onClick="@{() -> viewModel.doRecharge(data, errorModel)}"
             android:text="Recharge Now"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
